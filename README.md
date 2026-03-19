@@ -1,4 +1,4 @@
-# 🤖 sublimacao-bot
+# 🤖 chatbot-whatsapp
 
 > Bot de pedidos via WhatsApp com FastAPI + Google Sheets para loja de sublimação
 
