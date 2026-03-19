@@ -5,15 +5,16 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green.svg)](https://fastapi.tiangolo.com)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-Configura%C3%A7%C3%B5es%20Finais-orange.svg)](#)
 
 ---
 
-## 📌 Sobre o Projeto
+## 🚀 Sobre o Projeto
 
 Automação completa de pedidos para loja de sublimação via WhatsApp.
-O cliente conversa com um bot guiado, confirma o pedido e tudo é registrado automaticamente no Google Sheets.
+O cliente conversa com um bot guiado, confirma o pedido e tudo é registrado automaticamente no Google Sheets com painel visual para o lojista.
 
-## 🛠️ Stack
+## 🛠 Stack
 
 | Componente | Tecnologia |
 |---|---|
@@ -23,91 +24,127 @@ O cliente conversa com um bot guiado, confirma o pedido e tudo é registrado aut
 | Hospedagem | Railway / Render |
 | Sessões | Dict em memória (MVP) / Redis (escala) |
 
-## 📂 Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
 ```
 sublimacao-bot/
 ├── app/
 │   ├── main.py              # FastAPI + webhook endpoint
-│   ├── config.py            # Variaveis de ambiente
+│   ├── config.py            # Settings e variáveis de ambiente
 │   ├── bot/
-│   │   ├── session.py       # Gerenciamento de estado
-│   │   ├── flow.py          # Logica do fluxo de pedido
-│   │   └── messages.py      # Templates de mensagem
+│   │   ├── flow.py          # 5 etapas do fluxo de pedido
+│   │   ├── messages.py      # Templates de mensagem
+│   │   └── session.py       # Session Manager em memória
 │   └── integrations/
-│       ├── evolution.py     # Cliente Evolution API
+│       ├── evolution.py     # Cliente Evolution API (WhatsApp)
 │       └── sheets.py        # Cliente Google Sheets
+├── scripts/
+│   └── setup_sheets.py      # Setup automatico da planilha de produção
 ├── docs/
-│   ├── arquitetura.png
-│   ├── fase-0-direcao-projeto.md
-│   ├── fase-1-conexao-whatsapp-backend.md
-│   ├── fase-2-fluxo-conversa.md
-│   ├── fase-3-integracao-google-sheets.md
+│   ├── fase-1-setup.md
+│   ├── fase-2-fluxo-bot.md
+│   ├── fase-3-google-sheets.md
 │   ├── fase-4-painel-lojista.md
-│   ├── fase-5-notificacao-status-cliente.md
-│   ├── fase-6-escala-100-pedidos-dia.md
-│   └── fase-7-storytelling-documentacao.md
-├── requirements.txt
-├── Dockerfile
+│   ├── fase-5-notificacao-status.md
+│   ├── fase-6-escala-100-pedidos.md
+│   ├── fase-7-storytelling.md
+│   └── fase-8-go-live.md    # ⭐ PROXIMA ETAPA
 ├── .env.example
-└── railway.toml
+├── Dockerfile
+├── railway.toml
+└── requirements.txt
 ```
 
-## 🚀 Fluxo do Sistema
+## 📊 Status das Fases
 
-```
-Cliente (WhatsApp)
-       ↓ mensagem
-[Evolution API] --webhook--> [FastAPI + Python]
-                                     ↓
-                        [Session Manager]
-                                     ↓
-                         [Google Sheets API]
-                                     ↓
-                        [Notificacao ao cliente]
-```
+| Fase | Descrição | Status |
+|------|-----------|--------|
+| Fase 0 | Direção do Projeto | ✅ Concluída |
+| Fase 1 | Conectar WhatsApp ao Backend | ✅ Concluída |
+| Fase 2 | Fluxo de Conversa do Bot | ✅ Concluída |
+| Fase 3 | Integração com Google Sheets | ✅ Concluída |
+| Fase 4 | Painel do Lojista | ✅ Concluída |
+| Fase 5 | Notificação de Status para o Cliente | ✅ Concluída |
+| Fase 6 | Escala para 100+ Pedidos/Dia | ✅ Concluída |
+| Fase 7 | Storytelling e Documentação | ✅ Concluída |
+| **Fase 8** | **Configurações Finais & Go Live** | **🔶 Em andamento** |
 
-## ⚙️ Configuracao
+## ⚡ Quick Start
 
-1. Clone o repositorio:
+### 1. Clonar e instalar dependências
+
 ```bash
 git clone https://github.com/Miked0/sublimacao-bot.git
 cd sublimacao-bot
-```
-
-2. Instale as dependencias:
-```bash
 pip install -r requirements.txt
 ```
 
-3. Configure as variaveis de ambiente:
+### 2. Configurar variáveis de ambiente
+
 ```bash
 cp .env.example .env
 # Edite o .env com suas credenciais
 ```
 
-4. Rode localmente:
+### 3. Setup da planilha (executar uma vez)
+
+```bash
+python scripts/setup_sheets.py
+```
+
+### 4. Rodar localmente
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
-## 🗒️ Fases do Projeto
+### 5. Testar o webhook
 
-| Fase | Descricao | Status |
-|---|---|---|
-| 0 | Direcao do Projeto | ✅ Concluida |
-| 1 | Conectar WhatsApp ao Backend | 🟡 Em andamento |
-| 2 | Fluxo de Conversa do Bot | ⏳ Pendente |
-| 3 | Integracao Google Sheets | ⏳ Pendente |
-| 4 | Painel do Lojista | ⏳ Pendente |
-| 5 | Notificacao de Status | ⏳ Pendente |
-| 6 | Escala 100+ Pedidos/Dia | ⏳ Pendente |
-| 7 | Storytelling e Documentacao | ⏳ Continuo |
+```bash
+curl -X POST http://localhost:8000/webhook \
+  -H "Content-Type: application/json" \
+  -d '{"data": {"key": {"remoteJid": "5511999999999@s.whatsapp.net"}, "message": {"conversation": "oi"}}}'
+```
 
-## 📝 Licenca
+## 🌎 Deploy no Railway
 
-MIT License - veja [LICENSE](LICENSE) para detalhes.
+```bash
+# Instalar Railway CLI
+npm install -g @railway/cli
 
----
+# Login e deploy
+railway login
+railway up
+```
 
-> Projeto documentado publicamente como parte de uma jornada de desenvolvimento. Acompanhe a evolucao no Instagram via Close Friends.
+Configure as variáveis de ambiente no painel do Railway conforme `.env.example`.
+
+## 📄 Variáveis de Ambiente
+
+Veja `.env.example` para a lista completa. Principais:
+
+```env
+EVOLUTION_API_URL=       # URL da Evolution API
+EVOLUTION_API_KEY=       # Chave da API
+EVOLUTION_INSTANCE=      # Nome da instância
+SPREADSHEET_ID=          # ID da planilha Google Sheets
+GOOGLE_CREDENTIALS_FILE= # Caminho para credentials.json
+```
+
+## 📝 Documentação
+
+Guias detalhados de cada fase em `docs/`. Comece por:
+- [`docs/fase-8-go-live.md`](docs/fase-8-go-live.md) — Checklist de configurações finais para produção
+
+## 📈 Capacidade
+
+- **MVP (<50 pedidos/dia):** Sessões em memória + Google Sheets direto
+- **Escala (100+ pedidos/dia):** Redis + append_rows em lote
+
+## 📅 Atualizado em
+
+Março de 2026 — Fases 0-7 concluídas, Fase 8 (Go Live) em andamento.
+
+## 📄 Licença
+
+MIT License — veja [LICENSE](LICENSE) para detalhes.
